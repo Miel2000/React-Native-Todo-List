@@ -1,16 +1,20 @@
 
 import React from 'react';
 import { StyleSheet, Text, SafeAreaView, View, Platform } from 'react-native';
+import { Provider } from 'react-redux';
+
+import store from './src/redux/store';
 import Header from './src/components/Header/index';
-import TasksContainer from './src/components/TasksStore/TasksContainer'
+import TasksContainer from './src/components/TasksStore/TasksContainer';
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      
-   
-      <TasksContainer />
-    </SafeAreaView>
+    <Provider store={store}>
+      <SafeAreaView style={styles.container}>
+        <Header />
+        <TasksContainer />
+      </SafeAreaView>
+    </Provider>
   );
 }
 

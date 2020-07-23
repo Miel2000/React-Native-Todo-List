@@ -1,40 +1,45 @@
 import React  from 'react';
 
+import {useDispatch} from 'react-redux';
 
 import {Image, Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {toggleTask} from '../../redux/actions';
 
 
-const TaskTile = ({ id, title, completed, onTrashPress, onChangeStatus}) => {
+const TaskTile = ({ id, title, completed, onTrashPress}) => {
 
-
+    const dispatch = useDispatch()
 
     return (
-        <TouchableOpacity
-         
-            onPress={() => onChangeStatus(id)}
+      <TouchableOpacity onPress={() => dispatch(toggleTask(id))}>
+        <View style={styles.container}>
+          <View style={styles.subContainer}>
+            <Image
+              style={styles.icon}
+              source={
+                completed
+                  ? require("../../../assets/img/round_checked.png")
+                  : require("../../../assets/img/round_unchecked.png")
+              }
+            />
+            <Text
+              style={
+                (styles.title, { color: completed ? "lightgrey" : "black" })
+              }
             >
-            <View style={styles.container}>
-                <View style={styles.subContainer}>
-                    <Image
-                        style={styles.icon}
-                        source={ completed 
-                            ? require('../../../assets/img/round_checked.png') 
-                            : require('../../../assets/img/round_unchecked.png') } />
-                    <Text style={styles.title, {color: completed ? 'lightgrey': 'black'}}>{title}</Text>
+              {title}
+            </Text>
+          </View>
 
-                </View>
-        
-        
-                <TouchableOpacity onPress={ () => onTrashPress(id)}>
-                    <Image
-                        
-                        style={styles.icon}
-                        source={require('../../../assets/img/trash.png')}
-                    />
-                </TouchableOpacity>
-            </View>
-        </TouchableOpacity>
-    )
+          <TouchableOpacity onPress={() => onTrashPress(id)}>
+            <Image
+              style={styles.icon}
+              source={require("../../../assets/img/trash.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
 }
 
 

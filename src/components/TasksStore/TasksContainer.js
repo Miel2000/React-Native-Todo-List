@@ -1,68 +1,72 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import TasksList from './TasksList';
 import TaskForm from './TaskForm';
+import TasksCompteur from './TasksCompteur';
+import FloatingButton from '../_Shared/FloatingButton/index'
+
+import { useSelector } from 'react-redux';
+import { getTasks } from '../../redux/selectors';
 
 export default function TasksContainer(props) {
-    const [tasks, setTasks] = useState([
-        { id: new Date().getTime(), title: 'nouvelle tache', completed: Boolean},
-     
-    ])
+  
+    const tasks = useSelector(getTasks);
+   
 
-    const onAddTask = (title) => {
+    const [isFormOpened, setIsFormOpened] = useState(false)
 
-        const newTask = { 
-            id: new Date().getTime(),
-            title: title,
-            completed: false
-        }
-
-        setTasks([newTask, ...tasks]);
-    }
-
+ 
 
     const onTrashPress = (id) => {
-        let newTasks = [];
-        tasks.forEach(task => {
-            if(task.id !== id) {
-                newTasks.push(task);
-            }
-        })
-      
-
-        setTasks(newTasks);
-
+  
     }
 
-    const onChangeStatus = (id) => {
-        let newTasks = [];
-        
-        tasks.forEach(task => {
-            if(task.id === id){
-                newTasks.push({ 
-                    id: id,
-                    title: task.title,
-                    completed: !task.completed  
-                });
-            } else {
-                newTasks.push(task)
-                
-            }
-        });
-    
 
-        setTasks(newTasks);
+
+    const getTasksCompleted = () => {
+
+        let counters = 0
+
+        tasks.forEach(task => {
+            if(task.completed){
+                counters++;
+            }
+        })
+        return counters
+    }
+
+    const onPressFloatingBtn = () => {
+        setIsFormOpened(!isFormOpened)
     }
 
     return (
-        <View>
-            <TaskForm onAddTask={onAddTask} />
+        <View style={styles.container}>
+            <TasksCompteur
+                nbTasks={tasks.length}
+                nbTasksCompleted={() => getTasksCompleted()}
+            />
+
+
+            {isFormOpened &&  <TaskForm  />}
 
             <TasksList onTrashPress={onTrashPress} 
                        tasks={tasks} 
-                       onChangeStatus={onChangeStatus}
+                      
                         />
+
+            <FloatingButton 
+                onPressFloatingBtn={ () => onPressFloatingBtn()  }
+                isFormOpened={isFormOpened}
+            />
         </View>
     )
 }
 
+
+const styles = StyleSheet.create({
+    container: {
+       
+        flex:1,
+        position: 'relative'
+    }
+})
